@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 const RegisterPage = () => {
+  const [confirmPassword, setConfirmPassword]= useState(null);
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -28,6 +29,9 @@ const RegisterPage = () => {
     handleRegister();
   };
 
+  const checkValidation = async() =>{
+
+  }
 
   const handleRegister = async () => {
     try {
@@ -119,9 +123,18 @@ const RegisterPage = () => {
 
           <label class="label-style-register c-w">
             Password:
-            <input class="input-text-box-login margins mr-l-73" type="password" name="password" value={formData.password} onChange={handleChange} />
+            <input class="input-text-box-login margins mr-l-73"  type="password" name="password" value={formData.password} onChange={handleChange} />
+          </label>
+          <br/>
+
+          <label class="label-style-register c-w">
+            Confirm Password:
+            <input class="input-text-box-login margins" type="password" name="password" value={confirmPassword} onChange={(event)=> setConfirmPassword(event.target.value)} />
           </label>
           <br />
+
+          {formData.password != confirmPassword && <label class="c-r"> Password is not matching, please reenter</label>}
+<br/>
 
           <label class="label-style-register c-w">
             Contact:

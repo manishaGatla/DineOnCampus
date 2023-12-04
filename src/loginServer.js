@@ -216,7 +216,7 @@ app.get('/api/get/AministratorBal', async (req, res) => {
 
 app.get('/api/get/OrderByUserId', async (req, res) => {
   const id = req.query.id;
-  Orders.find({ userId: id, status: { $ne: 'cancelled' } })
+  Orders.find({ userId: id, status: { $ne: 'Cancelled' } })
     .then((data) => {
       res.json(data);
     })
@@ -290,9 +290,9 @@ app.post('/api/update/MealPlan', (req, res) => {
     $set: {
       isAvaliable: true,
       planName: "Buffet",
-      TimeSlot: details.timeSlot,
+      TimeSlot: details.TimeSlot,
       date: details.date,
-      MenuList: details.selectedMenu,
+      MenuList: details.MenuList,
       price: details.price,
     }
   };
@@ -307,12 +307,15 @@ app.post('/api/update/orderStatus', async (req, res) => {
   const selectedIds = req.body.data;
   const selectedObjectIds = selectedIds.map((id) => new ObjectId(id));
   collection.updateMany({ _id: { $in: selectedObjectIds } },
-    { $set: { status: 'cancelled' } }).then((data) => {
+    { $set: { status: req.body.status , reason : req.body.reason} }).then((data) => {
       res.json(data);
     });
 
 
 })
+
+
+
 
 
 app.get('/api/login', async (req, res) => {

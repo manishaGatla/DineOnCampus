@@ -203,3 +203,7 @@
     color: #999; /* Text color indicating it's disabled */
     /* Any other styles to visually indicate it's disabled */
   }
+
+  .c-r{
+    color: red !important;
+  }

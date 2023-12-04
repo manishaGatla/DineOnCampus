@@ -16,15 +16,17 @@ const Orders = () => {
   const location = useLocation();
   const [Orders, setOrderData] = useState([]);
   const [userId, setUserId] = useState([]);
-  
+  const [walletId, setWalletId] = useState([]);
   const [balance, setBalance] = useState(0);
   const [isAdmin, setIsAdmin] = useState(false);
   const [selectedOrders, setSelectedOrders] = useState([]);
   const [selectedOrder, setSelectedOrder] = useState();
   const currentHour = new Date().getHours();
   const currentDate = new Date();
-  
+  const [selectedMealPlan, setSelectedMealPlan] = useState(null);
   const [numberOfPersons, setNumberOfPersons] = useState(1);
+  const [isRejectBtnClicked, setisRejectBtnClicked] = useState(false);
+  const [reason, setReason] = useState(null);
   const formattedDate = currentDate.getFullYear() + "-" + String(currentDate.getMonth() + 1).padStart(2, '0') + '-' + String(currentDate.getDate()).padStart(2, '0');
 
   useEffect(() => {
@@ -41,7 +43,7 @@ const Orders = () => {
         const response = await fetch(url);
         const data = await response.json();
         data.forEach((item) => {
-          if (item.date > formattedDate || (formattedDate == item.date && currentHour + 1 <= mealTimes[item.TimeSlot])) {
+          if ((item.date > formattedDate || (formattedDate == item.date && currentHour + 1 <= mealTimes[item.TimeSlot])) && item.status == 'Order Placed') {
             item.isCancellable = true
           } else {
             item.isCancellable = false
@@ -55,6 +57,11 @@ const Orders = () => {
     };
     fetchOrders();
   }, []);
+
+  const handleRejectSelectedOrder = async(order) =>{
+    setSelectedOrder(order);
+    setisRejectBtnClicked(true);
+  }
 
   const addSelectedOrder = async (data, event) => {
     if (event.target.checked) {
@@ -116,17 +123,74 @@ const Orders = () => {
     if (response.ok) {
       const data = await response.json();
       const req = { userId: userId, Balance: balance + selectedOrders.reduce((acc, item) => acc + item.balance, 0)}
-          const response = await fetch('http://localhost:3001/api/update/WalletByUserId', {
+          const responsewa = await fetch('http://localhost:3001/api/update/WalletByUserId', {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json',
             },
             body: JSON.stringify(req),
           });
+          setReason(null);
+  setSelectedOrder(null);
+  setSelectedOrders([]);
       window.location.href = '/orders?userId=' + searchParams.get('userId') + '&isAdmin=false';
 
     }
   };
+
+  const handleApproveOrder = async (order) => {
+    const searchParams = new URLSearchParams(location.search);
+    const req = { data: [order._id], status: "Approved" };
+    const response = await fetch('http://localhost:3001/api/update/orderStatus', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(req),
+    });
+    if (response.ok) {
+      const data = await response.json();    
+      setReason(null);
+  setSelectedOrder(null);
+  setSelectedOrders([]);
+      window.location.href = '/orders?userId=' + searchParams.get('userId') + '&isAdmin=true';
+
+    }
+  };
+
+
+
+  const handleRejectOrder = async () => {
+    const searchParams = new URLSearchParams(location.search);
+    const req = { data: [selectedOrder._id], status: "Rejected", reason : reason };
+    const response = await fetch('http://localhost:3001/api/update/orderStatus', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(req),
+    });
+    if (response.ok) {
+      const data = await response.json();  
+      const req = { userId: userId, Balance: balance + selectedOrder.total}
+      const responseWal = await fetch('http://localhost:3001/api/update/WalletByUserId', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(req),
+  });  
+
+  setReason(null);
+  setSelectedOrder(null);
+  setSelectedOrders([]);
+      window.location.href = '/orders?userId=' + searchParams.get('userId') + '&isAdmin=true';
+
+    }
+  };
+
+  
+
 
   return (
     <section>
@@ -164,37 +228,34 @@ const Orders = () => {
               <th>Date</th>
               <th>Time Slot</th>
               <th>Amount</th>
-              {isAdmin == "false" && <th>
+              <th>
                 Number of Persons
+              </th>
+              <th>
+                Order status
+              </th>
+              <th>
+                Reason for reject
+              </th>
+              {isAdmin == "true" && <th>
+                Action
               </th>}
-              {/* {isAdmin == "false" && <th>
-                Edit Number of persons
-              </th>} */}
+             
               {isAdmin == "false" && <th>
                 Cancel Order
               </th>}
+              
             </tr>
           </thead>
           <tbody>
             {Orders.map((order) => (
-              <tr key={order._id} style={selectedMealPlan === mealPlan ? { backgroundColor: '#a7a2a2' } : {}}>
+              <tr key={order._id} >
                 <td>{order.date}</td>
                 <td>{order.TimeSlot}</td>
                 <td>{order.total}</td>
-                {/* {isAdmin == "false" && <td>
-                  <input id={order._id}
-                    value={order._id}
-                    class="checkbox-style"
-                    type="radio"
-                    name="order"
-                    disabled={!order.isCancellable}
-                    //checked={selectedOrders.includes(order._id)}
-                    onChange={(event) => {
-                      if(event && event.target.value) setSelectedOrder(order)
-                    }}
-                  />
-
-                </td>} */}
+               <td>{order.numberOfPersons}</td>
+               <td>{order.status}</td>
+               <td>{order.reason}</td>
                 {isAdmin == "false" && <td>
                   <input id={order._id}
                     value={order._id}
@@ -207,27 +268,42 @@ const Orders = () => {
                   />
 
                 </td>}
+
+                {isAdmin == "true" && <div>
+          <td><button type="submit" class="cancel-order-btn mr-l-15 margins" disabled={order.status !== 'Order Placed'} onClick={(event)=> handleApproveOrder(order,event)} >
+            Approve Order
+          </button>
+          <button type="submit" class="cancel-order-btn mr-l-15 margins" disabled={order.status !== 'Order Placed'} onClick={(event)=> handleRejectSelectedOrder(order,event)} >
+           Reject Order
+          </button></td>
+        </div>}
               </tr>
             ))}
           </tbody>
         </table>
 
-        {/* {isAdmin == "false" && showEditOrder && <div>
-        <label class="c-w">Number of Persons:</label>
-            <input class="mr-r-15 mr-l-23 select-style"
-              type="number"
-              value={numberOfPersons}
-              onChange={(e) => setNumberOfPersons(e.target.value)}
-            />
-            <button onClick={handleUpdateOrder} class="cancel-order-btn">Update Order</button>
-          </div>} */}
+        
+        {isAdmin == "true" &&  isRejectBtnClicked && <div>
+        <label class="mr-r-15  margins label-style-register">
+                                   Reason for Refusing the order:
+                                    <input class="mr-r-15  mr-l-61 select-style"
+                                        type="text"
+                                        value={reason}
+                                        onChange={(e) => setReason(e.target.value)}
+                                    />
+                                </label>
+          </div>}
+
+        {isAdmin == "true" && isRejectBtnClicked && <div>
+          <button type="submit" class="cancel-order-btn margins mr-l-15"  onClick={handleRejectOrder} >
+            Confirm Reject Order
+          </button>
+        </div>}
+        
 
         {isAdmin == "false" && <div>
-          <button type="submit" class="cancel-order-btn margins" disabled={selectedOrders && selectedOrders.length <= 0} onClick={handleCancelMealPlan} >
+          <button type="submit" class="cancel-order-btn margins mr-l-15" disabled={selectedOrders && selectedOrders.length <= 0} onClick={handleCancelMealPlan} >
             Cancel Selected Order(s)
-          </button>
-          <button type="submit" class="cancel-order-btn margins" disabled={!selectedOrder} onClick={handleCancelMealPlan} >
-            Edit Order
           </button>
         </div>}
 

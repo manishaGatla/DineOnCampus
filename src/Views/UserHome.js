@@ -151,7 +151,7 @@ const UserHome = () => {
               {/* Table headers */}
               <thead>
                 <tr>
-                  <th>Price</th>
+                  <th>Price (In $)</th>
                   <th>Date</th>
                   <th>Menu List</th>
                   <th>Time Slot</th>

@@ -21,7 +21,7 @@ const MealPlans = () => {
   const [MealPlans, setMealData] = useState([]);
 
   const handleCopyToNewMealPlan = () => {
-    const queryString = `?date=${selectedMealPlan.date}&timeSlot=${selectedMealPlan.timeSlot}
+    const queryString = `?date=${selectedMealPlan.date}&timeSlot=${selectedMealPlan.TimeSlot.trim()}
         &menu=${encodeURIComponent(JSON.stringify(selectedMealPlan.MenuList))}&price=${selectedMealPlan.price}`;
 
     window.location.href = `/adminHome${queryString}`;
@@ -44,7 +44,7 @@ const MealPlans = () => {
   }
 
   const handleEditMealPlan = async ()=>{
-    const queryString = `?date=${selectedMealPlan.date}&timeSlot=${selectedMealPlan.timeSlot}
+    const queryString = `?date=${selectedMealPlan.date}&timeSlot=${selectedMealPlan.TimeSlot.trim()}
         &menu=${encodeURIComponent(JSON.stringify(selectedMealPlan.MenuList))}&price=${selectedMealPlan.price}&id=${selectedMealPlan._id}`;
 
     window.location.href = `/adminHome${queryString}`;
@@ -102,7 +102,7 @@ const MealPlans = () => {
               <th>Date</th>
               <th>Time Slot</th>
               <th>Menu</th>
-              <th>Price</th>
+              <th>Price (In $)</th>
               <th>Create New Plan With Existing</th>
             </tr>
           </thead>

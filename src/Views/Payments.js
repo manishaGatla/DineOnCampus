@@ -43,7 +43,8 @@ const Payments = () => {
                     total: mealPlanSelected.price * numberOfPersons,
                     userId: searchParams.get('userId'),
                     TimeSlot: mealPlanSelected.TimeSlot,
-                    date: mealPlanSelected.date
+                    date: mealPlanSelected.date,
+                    status: "Order Placed"
                 }
                 const response = await fetch('http://localhost:3001/api/Add/Orders', {
                     method: 'POST',

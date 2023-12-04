@@ -9,8 +9,10 @@ const AdminHome = () => {
   const [Menu, setMenuData] = useState([]);
   const [price, setPrice] = useState('');
   const [timeSlot, setTimeSlot] = useState('');
+  
   const [userId, setUserId] = useState('');
   const [date, setdate] = useState(Date);
+  const today = new Date().toISOString().split('T')[0];
   const [previousMealPlanId, setMealPlanId] = useState(null);
   useEffect(() => {
 
@@ -20,7 +22,12 @@ const AdminHome = () => {
     }
     setUserId(searchParams.get('userId'));
     setdate(searchParams.get('date') || '');
-    setTimeSlot(searchParams.get('timeSlot') || '');
+    if(searchParams.get('timeSlot')){
+      var slotSelected =searchParams.get('timeSlot').trim() == 'breakfast'  
+      ? 'breakfast' :searchParams.get('timeSlot').trim() == 'lunch'  ? 'lunch' :searchParams.get('timeSlot').trim() == 'dinner' ? 'dinner' : '';
+      setTimeSlot(slotSelected);
+    }
+    
     if (searchParams.get('id')) {
       setMealPlanId(searchParams.get('id'));
     }
@@ -34,23 +41,22 @@ const AdminHome = () => {
       })
     }
     setPrice(searchParams.get('price') || '');
+    
+
+    fetchMenuData();
   }, [location.search]);
 
 
-  useEffect(() => {
-    const fetchMenuData = async () => {
-      try {
+  const fetchMenuData = async () => {
+    try {
 
-        const response = await fetch('http://localhost:3001/api/get/Menu');
-        const data = await response.json();
-        setMenuData(data);
-      } catch (error) {
-        console.error('Error fetching menu data:', error);
-      }
-    };
-
-    fetchMenuData();
-  }, []);
+      const response = await fetch('http://localhost:3001/api/get/Menu');
+      const data = await response.json();
+      setMenuData(data);
+    } catch (error) {
+      console.error('Error fetching menu data:', error);
+    }
+  };
 
 
 
@@ -90,6 +96,7 @@ const AdminHome = () => {
       if (response.ok) {
         const data = await response.json();
         window.location.href = "./adminHome?userId=" + searchParams.get('userId');
+        setUserId(searchParams.get('userId'));
       }
     }
     else{
@@ -114,6 +121,7 @@ const AdminHome = () => {
     if (response.ok) {
       const data = await response.json();
       window.location.href = "./adminHome?userId=" + searchParams.get('userId');
+      setUserId(searchParams.get('userId'));
     }
   }
   };
@@ -143,19 +151,19 @@ const AdminHome = () => {
         {isAddPlanClicked && (
           <form onSubmit={handleSubmit}>
             <label htmlFor="date" class="mr-r-15 c-w"> Date:</label>
-            <input type="date" class="mr-r-15 select-style" id="date" value={date}
+            <input type="date" class="mr-r-15 select-style" id="date" value={date} min={today}
               onChange={(e) => setdate(e.target.value)} required />
 
             <label htmlFor="timeSlot" class="mr-r-15 c-w">Time Slot:</label>
             <select id="timeSlot" class="mr-r-15 select-style" value={timeSlot}
-              onChange={handleDropdownChange} required>
+              onChange={(event) => handleDropdownChange(event)} required>
               <option value="" disabled class="c-b">Select Time Slot</option>
               <option value="lunch" class="c-b">Lunch</option>
               <option value="dinner" class="c-b">Dinner</option>
               <option value="breakfast" class="c-b">BreakFast</option>
             </select>
             <div class="margins">
-              <label class="mr-r-15  c-w">Price Per Person:</label>
+              <label class="mr-r-15  c-w">Price Per Person (In $):</label>
               <input type="text" class="input-text-box-login" placeholder="Price Per Person" value={price}
                 onChange={(e) => setPrice(e.target.value)} />
             </div>
