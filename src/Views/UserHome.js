@@ -117,7 +117,11 @@ const UserHome = () => {
 
       <div class="container">
         <div class="mr-l-400">
-
+          <div class="c-g  mr-l-180">
+            <div class="margins">Breakfast starts at 7:00AM</div>
+            <div class="margins">Lunch starts at 12:00PM</div>
+            <div class="margins">Dinner starts at 7:00PM</div>
+          </div>
           <h2 class="c-w">
             Select Date to search for the meal plans
           </h2>
@@ -142,6 +146,8 @@ const UserHome = () => {
               <line x1="21" y1="21" x2="16.65" y2="16.65" />
             </svg>
           </button>
+
+         
 
         </div>
         {mealPlans && mealPlans.length > 0 && (

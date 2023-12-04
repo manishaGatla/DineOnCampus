@@ -158,6 +158,11 @@ const Orders = () => {
     }
   };
 
+  const cancelReject = async ()=>{
+    setisRejectBtnClicked(false);
+    setSelectedOrder(null);
+    setReason(null);
+  }
 
 
   const handleRejectOrder = async () => {
@@ -227,7 +232,7 @@ const Orders = () => {
             <tr >
               <th>Date</th>
               <th>Time Slot</th>
-              <th>Amount</th>
+              <th>Amount (In $)</th>
               <th>
                 Number of Persons
               </th>
@@ -283,7 +288,7 @@ const Orders = () => {
         </table>
 
         
-        {isAdmin == "true" &&  isRejectBtnClicked && <div>
+        {isAdmin == "true" &&  isRejectBtnClicked && <div class="margins mr-l-450">
         <label class="mr-r-15  margins label-style-register">
                                    Reason for Refusing the order:
                                     <input class="mr-r-15  mr-l-61 select-style"
@@ -297,6 +302,9 @@ const Orders = () => {
         {isAdmin == "true" && isRejectBtnClicked && <div>
           <button type="submit" class="cancel-order-btn margins mr-l-15"  onClick={handleRejectOrder} >
             Confirm Reject Order
+          </button>
+          <button type="submit" class="cancel-order-btn margins mr-l-15"  onClick={cancelReject} >
+            Back
           </button>
         </div>}
         

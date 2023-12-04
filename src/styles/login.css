@@ -240,3 +240,16 @@
   .c-r{
     color: red !important;
   }
+
+  .c-g{
+    color: green;
+    font-weight: bolder;
+  }
+
+  .mr-l-180{
+    margin-left: 180px;
+  }
+
+  .mr-l-450{
+    margin-left: 450px;
+  }

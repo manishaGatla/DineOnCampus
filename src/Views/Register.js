@@ -133,8 +133,8 @@ const RegisterPage = () => {
           </label>
           <br />
 
-          {formData.password != confirmPassword && <label class="c-r"> Password is not matching, please reenter</label>}
-<br/>
+          {formData.password && confirmPassword &&  formData.password != confirmPassword && <label class="c-r"> Password is not matching, please reenter</label>}
+          <br/>
 
           <label class="label-style-register c-w">
             Contact:
