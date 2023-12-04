@@ -1,0 +1,238 @@
+
+
+.input-text-box-login{
+    height: 25px !important;
+    width: 200px !important;
+  }   
+
+  .margins{
+    margin-top: 10px;
+    margin-bottom: 20px;
+  }
+
+  .container{
+    padding: 38px;
+    border: 1px solid #5a5555;
+    background-color: #f2f2f20d;
+    box-shadow: 5px 5px 10px rgb(73 67 67 / 53%);
+  }
+
+  .login-btn{
+    height: 30px;
+    width: 74px;
+    background: #c43131;
+    border: none;
+    color: white;
+  }
+
+  .label-style-register{
+    margin: 5px !important;
+    font-size: 20px;
+    color: white;
+  }
+
+  .register-container{
+    display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 38px;
+    border: 1px solid #5a5555;
+    background-color: #f2f2f20d;
+    box-shadow: 5px 5px 10px rgb(73 67 67 / 53%);
+  }
+
+  .mr-l-100{
+    margin-left: 100px;
+  }
+
+  .mr-l-73{
+    margin-left: 73px;
+  }
+
+  .mr-l-86{
+    margin-left: 86px;
+  }
+
+  .mr-l-39{
+    margin-left: 39px;
+  }
+
+  .mr-l-15{
+    margin-left: 15px;
+  }
+
+  .landing-page_fullWidthImage_32LUC {
+    height: 18rem;
+    background: url(../images/logo.jpg);
+    background-repeat: no-repeat;
+    background-position-x: 80%;
+    background-position-y: center;
+    background-size: cover;
+}
+
+.mov-right{
+  float: right;
+}
+
+  .mr-l-23{
+    margin-left: 23px;
+  }
+
+  .bgm-border{
+    background-color: #e4dddd;
+
+  }
+
+  .mr-b-20{
+    margin-bottom:20px;
+    
+  }
+
+
+  .submit-meal-btn{
+    height: 30px;
+    width: 150px;
+    background: #c43131;
+    border: none;
+    color: white;
+    
+  }
+
+  .cancel-order-btn{
+    height: 30px;
+    width: 200px;
+    background:#c43131;
+    border: none;
+    color: white;
+  }
+
+  .mr-r-15{
+    margin-right: 15px;
+  }
+
+  .select-style{
+    height: 30px;
+    width: 350px;
+  }
+
+  .checkbox-style{
+    margin-bottom: 10px;
+    width: 25px;
+    height: 38px;
+
+}
+
+.mr-t-20{
+  margin-top: 20px ;
+}
+
+
+  .warning-style{
+    color: red;
+    margin: 10px;
+    align-items: center;
+    font-style: bold;
+    padding: 30px ;
+  }
+
+  input:disabled {
+    background-color: #f2f2f2; /* Grey background color */
+    color: #999; /* Text color indicating it's disabled */
+    /* Any other styles to visually indicate it's disabled */
+  }
+
+  button {
+    background-color: blue; /* Blue color when enabled */
+    color: white; /* Text color */
+    /* Other styles */
+  }
+  
+  /* Disabled button */
+  button:disabled {
+    background-color: #ccc; /* Grey background color when disabled */
+    color: #999; /* Text color indicating it's disabled */
+    /* Other styles */
+  }
+
+  tr td {
+    color: white;
+  }
+
+  
+
+  html body {
+    background-image: url('https://img.freepik.com/premium-photo/italian-food-with-ingredients_1220-4856.jpg');
+    background-size: cover;
+    background-repeat: no-repeat;
+    height: 100%;
+    margin: 0;
+    padding: 0;
+  }
+
+  .mr-l-580{
+    margin-left: 580px !important;
+  }
+
+  .c-w{
+    color: white;
+  }
+
+.mr-l-300{
+  margin-left: 300px !important;
+}
+
+  tr{
+    background: #232121;
+  }
+
+  .h-21{
+    height: 21px !important;
+  }
+
+  .pd-l-300{
+    padding-left: 430px !important;
+  }
+
+  .mr-l-40{
+    margin-left: 40px !important;
+  }
+
+  .button-header{  
+    border: none;
+    border-radius: 5px;
+    margin-bottom: 20px;
+    margin-top: 20px;
+  }
+
+  .butoon-logout-color{
+    background-color: #db1515;
+  }
+
+  .button-header-color{
+    background-color: #eb3d6d;
+  }
+  .c-b{
+    color: black;
+  }
+
+  .mr-l-429{
+    margin-left: 429px !important;
+
+  }
+
+  .mr-l-90{
+    margin-left: 90px !important;
+  }
+
+  .mr-l-61{
+    margin-left: 61px !important;
+  }
+
+  .mr-l-53{
+    margin-left: 53px !important;
+  }
+
+  .mr-l-400{
+    margin-left: 400px !important;
+  }
