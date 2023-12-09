@@ -14,6 +14,8 @@ const AdminHome = () => {
   const [date, setdate] = useState(Date);
   const today = new Date().toISOString().split('T')[0];
   const [previousMealPlanId, setMealPlanId] = useState(null);
+  const [selectedItems, setSelectedItems] = useState([]);
+  const [startTime, setStartTime] = useState([]);
   useEffect(() => {
 
     const searchParams = new URLSearchParams(location.search);
@@ -27,6 +29,9 @@ const AdminHome = () => {
       ? 'breakfast' :searchParams.get('timeSlot').trim() == 'lunch'  ? 'lunch' :searchParams.get('timeSlot').trim() == 'dinner' ? 'dinner' : '';
       setTimeSlot(slotSelected);
     }
+    if(searchParams.get('startTime')){
+      setStartTime(searchParams.get('startTime'))
+    }
     
     if (searchParams.get('id')) {
       setMealPlanId(searchParams.get('id'));
@@ -37,7 +42,7 @@ const AdminHome = () => {
       const decodedMenuListString = decodeURIComponent(menuListString);
       const list = JSON.parse(decodedMenuListString);
       list.map((item) => {
-        setSelectedMenu((prevMenu) => [...prevMenu, item]);
+        setSelectedItems((prevMenu) => [...prevMenu, item]);
       })
     }
     setPrice(searchParams.get('price') || '');
@@ -58,6 +63,21 @@ const AdminHome = () => {
     }
   };
 
+  const handleItemSelection = (category, itemName) => {
+    const selectedItem = { category, itemName };
+    const alreadySelected = selectedItems.find(
+      (item) => item.category === category && item.itemName === itemName
+    );
+
+    if (alreadySelected) {
+      // If item already selected, remove it from the list
+      setSelectedItems(selectedItems.filter((item) => item !== alreadySelected));
+    } else {
+      // If not selected, add it to the list
+      setSelectedItems([...selectedItems, selectedItem]);
+    }
+  };
+
 
 
   const handleOnAddPlan = () => {
@@ -66,6 +86,7 @@ const AdminHome = () => {
     setSelectedMenu([]);
     setPrice('');
     setisAddPlanClicked(true);
+    setStartTime(null);
   }
 
   const handleDropdownChange = (event) => {
@@ -80,9 +101,10 @@ const AdminHome = () => {
         planName: "Buffet",
         TimeSlot: timeSlot,
         date: date,
-        MenuList: selectedMenu,
+        MenuList: selectedItems,
         price: price,
-        isAvaliable: true
+        isAvaliable: true,
+        startTime: startTime
       }
 
       const req = { details: data }
@@ -106,9 +128,10 @@ const AdminHome = () => {
       planName: "Buffet",
       TimeSlot: timeSlot,
       date: date,
-      MenuList: selectedMenu,
+      MenuList: selectedItems,
       price: price,
-      isAvaliable: true
+      isAvaliable: true,
+      startTime: startTime
     }
     const req = { details: data }
     const response = await fetch('http://localhost:3001/api/Add/MealPlan', {
@@ -162,6 +185,12 @@ const AdminHome = () => {
               <option value="dinner" class="c-b">Dinner</option>
               <option value="breakfast" class="c-b">BreakFast</option>
             </select>
+
+            <div>
+            <label class="mr-r-15  c-w">Start Time:</label>
+              <input type="time" class="input-text-box-login" placeholder="Start Time" value={startTime}
+                onChange={(e) => setStartTime(e.target.value)} />
+            </div>
             <div class="margins">
               <label class="mr-r-15  c-w">Price Per Person (In $):</label>
               <input type="text" class="input-text-box-login" placeholder="Price Per Person" value={price}
@@ -170,7 +199,7 @@ const AdminHome = () => {
 
             <h3 class="c-w">Select Menu Items that are included</h3>
 
-            {Menu.map((item) => (
+            {/* {Menu.map((item) => (
               <div class="mr-l-300" key={item._id}>
                 <input class="mr-r-15 checkbox-style h-21"
                   type="checkbox"
@@ -192,7 +221,29 @@ const AdminHome = () => {
                 </label>
 
               </div>
-            ))}
+            ))} */}
+
+{Menu.map((categoryData) => (
+        <div key={categoryData.category}>
+          <h2 class="mr-r-15 label-style-register">{categoryData.category}</h2>
+          {categoryData.items.map((menuItem) => (
+            <div key={menuItem.name}>
+              <input class="mr-r-15 checkbox-style h-21"
+                type="checkbox"
+                id={menuItem.name}
+                onChange={() => handleItemSelection(categoryData.category, menuItem.name)}
+                checked={
+                  selectedItems.some(
+                    (item) =>
+                      item.category === categoryData.category && item.itemName === menuItem.name
+                  )
+                }
+              />
+              <label htmlFor={menuItem.name} class="mr-r-15 label-style-register">{menuItem.name} </label>
+            </div>
+          ))}
+        </div>
+      ))}
 
 
 

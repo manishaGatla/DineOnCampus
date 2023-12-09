@@ -17,6 +17,8 @@ const UserHome = () => {
   const [selectedMealPlan, setSelectedMealPlan] = useState(null);
   const [numberOfPersons, setNumberOfPersons] = useState(1);
   const [balance, setBalance] = useState(null);
+  const [specialInstrutions, setSpecialInstructions] = useState(null);
+  const [extraItems, setExtraItems] = useState(null);
   const [userId, setUserId] = useState('');
   const [paymentMethod, setPaymentMethod] = useState('');
   const currentHour = new Date().getHours();
@@ -83,6 +85,19 @@ const UserHome = () => {
     fetchMealPlans(event.target.value);
   };
 
+  const convertTo12hrFormat = (time) => {
+    const [hours, minutes] = time.split(':');
+    const formattedTime = new Date();
+    formattedTime.setHours(hours, minutes);
+
+    return formattedTime.toLocaleTimeString('en-US', {
+      hour: 'numeric',
+      minute: 'numeric',
+      hour12: true,
+    });
+  }
+
+
   const handleMealPlanSelect = (mealPlan) => {
     setSelectedMealPlan(mealPlan);
   };
@@ -91,7 +106,7 @@ const UserHome = () => {
     try {
       const mealPlan = JSON.stringify(selectedMealPlan);
       const searchParams = new URLSearchParams(location.search);
-      const queryString = `?userId=${searchParams.get('userId')}&numberOfPersons=${numberOfPersons}&selectedMeal=${mealPlan}`;
+      const queryString = `?userId=${searchParams.get('userId')}&numberOfPersons=${numberOfPersons}&selectedMeal=${mealPlan}&extraItems=${extraItems}&specialInstructions=${specialInstrutions}`;
       window.location.href = '/payment' + queryString;
     }
     catch (error) {
@@ -117,11 +132,7 @@ const UserHome = () => {
 
       <div class="container">
         <div class="mr-l-400">
-          <div class="c-g  mr-l-180">
-            <div class="margins">Breakfast starts at 7:00AM</div>
-            <div class="margins">Lunch starts at 12:00PM</div>
-            <div class="margins">Dinner starts at 7:00PM</div>
-          </div>
+    
           <h2 class="c-w">
             Select Date to search for the meal plans
           </h2>
@@ -161,6 +172,7 @@ const UserHome = () => {
                   <th>Date</th>
                   <th>Menu List</th>
                   <th>Time Slot</th>
+                  <th>Start Time</th>
                   <th>Actions</th>
                 </tr>
               </thead>
@@ -170,8 +182,9 @@ const UserHome = () => {
                   <tr key={mealPlan.id} style={selectedMealPlan === mealPlan ? { backgroundColor: '#a7a2a2' } : {}}>
                     <td>{mealPlan.price}</td>
                     <td>{mealPlan.date}</td>
-                    <td>{mealPlan.MenuList.map(item => item.name).join(',')}</td>
+                    <td>{mealPlan.MenuList.map(item => item.itemName).join(',')}</td>
                     <td>{mealPlan.TimeSlot}</td>
+                    <td>{convertTo12hrFormat(mealPlan.startTime)}</td>
                     <td>
                       <button onClick={() => handleMealPlanSelect(mealPlan)} disabled={mealPlan.canMealPlanExpired} class="login-btn">
                         Book
@@ -203,6 +216,18 @@ const UserHome = () => {
               type="number"
               value={numberOfPersons}
               onChange={(e) => setNumberOfPersons(e.target.value)}
+            />
+             <label class="c-w">Special Instructions:</label>
+            <input class="mr-r-15 mr-l-23 select-style"
+              type="text"
+              value={specialInstrutions}
+              onChange={(e) => setSpecialInstructions(e.target.value)}
+            />
+             <label class="c-w">Extra Items (If any needed Name them):</label>
+            <input class="mr-r-15 mr-l-23 select-style"
+              type="text"
+              value={extraItems}
+              onChange={(e) => setExtraItems(e.target.value)}
             />
             <button onClick={handleBookMealPlan} class="login-btn">Book Now</button>
           </div>

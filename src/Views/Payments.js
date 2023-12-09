@@ -14,6 +14,7 @@ const Payments = () => {
     const [mealPlanSelected, setSelectedMealPlan] = useState(null);
     const [numberOfPersons, setNumberOfPersons] = useState(1);
     const location = useLocation();
+    const [expiryDate, setExpiryDate] = useState('');
 
     useEffect(() => {
 
@@ -37,12 +38,15 @@ const Payments = () => {
             const searchParams = new URLSearchParams(location.search);
             if (mealPlanSelected && numberOfPersons) {
                 const req = {
+                    extraItems: searchParams.get('extraItems'),
+                    specialInstructions: searchParams.get('specialInstructions'),
                     mealPlanId: mealPlanSelected._id,
                     numberOfPersons: numberOfPersons,
                     pricePerPerson: mealPlanSelected.price,
                     total: mealPlanSelected.price * numberOfPersons,
                     userId: searchParams.get('userId'),
                     TimeSlot: mealPlanSelected.TimeSlot,
+                    startTime: mealPlanSelected.startTime,
                     date: mealPlanSelected.date,
                     status: "Order Placed"
                 }
@@ -164,7 +168,7 @@ const Payments = () => {
                             checked={useWalletBalance}
                             onChange={() => setUseWalletBalance(!useWalletBalance)}
                         />
-                        Use Wallet Balance
+                        Use Wallet Balance (Avaliable Balance - ${balance})
                     </label>
 
 
@@ -178,8 +182,8 @@ const Payments = () => {
                                     Card Type:
                                     <select value={cardType} class=" mr-l-90 mr-r-15 select-style" onChange={(e) => setCardType(e.target.value)}>
                                         <option value="">Select Card Type</option>
-                                        <option value="visa">Visa</option>
-                                        <option value="mastercard">MasterCard</option>
+                                        <option value="creditCard">Credit card</option>
+                                        <option value="debitcard">Debit Card</option>
                                         {/* Add other card types as needed */}
                                     </select>
                                 </label>
@@ -209,11 +213,22 @@ const Payments = () => {
                             </div>
                             <div class="mr-r-15  margins ">
                                 <label class="mr-r-15 margins label-style-register">
-                                    Security Code:
+                                    CVV:
                                     <input class="mr-r-15 mr-l-53 select-style"
                                         type="text"
                                         value={securityCode}
                                         onChange={(e) => setSecurityCode(e.target.value)}
+                                    />
+                                </label>
+                            </div>
+
+                            <div class="mr-r-15  margins ">
+                                <label class="mr-r-15 margins label-style-register">
+                                    Expiry Date:
+                                    <input class="mr-r-15 mr-l-53 select-style"
+                                        type="text"
+                                        value={expiryDate}
+                                        onChange={(e) => setExpiryDate(e.target.value)}
                                     />
                                 </label>
                             </div>

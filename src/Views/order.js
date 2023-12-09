@@ -164,6 +164,19 @@ const Orders = () => {
     setReason(null);
   }
 
+  
+  const convertTo12hrFormat = (time) => {
+    const [hours, minutes] = time.split(':');
+    const formattedTime = new Date();
+    formattedTime.setHours(hours, minutes);
+
+    return formattedTime.toLocaleTimeString('en-US', {
+      hour: 'numeric',
+      minute: 'numeric',
+      hour12: true,
+    });
+  }
+
 
   const handleRejectOrder = async () => {
     const searchParams = new URLSearchParams(location.search);
@@ -236,6 +249,7 @@ const Orders = () => {
               <th>
                 Number of Persons
               </th>
+              <th>Start Time</th>
               <th>
                 Order status
               </th>
@@ -259,7 +273,9 @@ const Orders = () => {
                 <td>{order.TimeSlot}</td>
                 <td>{order.total}</td>
                <td>{order.numberOfPersons}</td>
+               <td>{convertTo12hrFormat(order.startTime)}</td>
                <td>{order.status}</td>
+
                <td>{order.reason}</td>
                 {isAdmin == "false" && <td>
                   <input id={order._id}

@@ -22,7 +22,7 @@ const MealPlans = () => {
 
   const handleCopyToNewMealPlan = () => {
     const queryString = `?date=${selectedMealPlan.date}&timeSlot=${selectedMealPlan.TimeSlot.trim()}
-        &menu=${encodeURIComponent(JSON.stringify(selectedMealPlan.MenuList))}&price=${selectedMealPlan.price}`;
+        &menu=${encodeURIComponent(JSON.stringify(selectedMealPlan.MenuList))}&price=${selectedMealPlan.price}&startTime=${selectedMealPlan.startTime}`;
 
     window.location.href = `/adminHome${queryString}`;
   };
@@ -43,9 +43,22 @@ const MealPlans = () => {
     }
   }
 
+  
+    const convertTo12hrFormat = (time) => {
+      const [hours, minutes] = time.split(':');
+      const formattedTime = new Date();
+      formattedTime.setHours(hours, minutes);
+  
+      return formattedTime.toLocaleTimeString('en-US', {
+        hour: 'numeric',
+        minute: 'numeric',
+        hour12: true,
+      });
+    }
+
   const handleEditMealPlan = async ()=>{
     const queryString = `?date=${selectedMealPlan.date}&timeSlot=${selectedMealPlan.TimeSlot.trim()}
-        &menu=${encodeURIComponent(JSON.stringify(selectedMealPlan.MenuList))}&price=${selectedMealPlan.price}&id=${selectedMealPlan._id}`;
+        &menu=${encodeURIComponent(JSON.stringify(selectedMealPlan.MenuList))}&price=${selectedMealPlan.price}&id=${selectedMealPlan._id}&startTime=${selectedMealPlan.startTime}`;
 
     window.location.href = `/adminHome${queryString}`;
   }
@@ -57,6 +70,18 @@ const MealPlans = () => {
       return true
     }
   }
+
+  const sortedMealPlans = MealPlans.slice().sort((a, b) => {
+    // First, sort by date
+    const dateComparison = new Date(a.date) - new Date(b.date);
+    if (dateComparison !== 0) {
+      return dateComparison;
+    }
+
+    // If dates are the same, sort by timeslot (breakfast, lunch, dinner)
+    const timeSlotOrder = { breakfast: 1, lunch: 2, dinner: 3 };
+    return timeSlotOrder[a.TimeSlot] - timeSlotOrder[b.TimeSlot];
+  });
 
   useEffect(() => {
     const searchParams = new URLSearchParams(location.search);
@@ -101,17 +126,19 @@ const MealPlans = () => {
             <tr>
               <th>Date</th>
               <th>Time Slot</th>
+              <th>Start Time</th>
               <th>Menu</th>
               <th>Price (In $)</th>
               <th>Create New Plan With Existing</th>
             </tr>
           </thead>
           <tbody>
-            {MealPlans.map((mealPlan) => (
+            {sortedMealPlans.map((mealPlan) => (
               <tr key={mealPlan._id}>
                 <td>{mealPlan.date}</td>
                 <td>{mealPlan.TimeSlot}</td>
-                <td>{mealPlan.MenuList.map(item => item.name).join(',')}</td>
+                <td>{convertTo12hrFormat(mealPlan.startTime)}</td>
+                <td>{mealPlan.MenuList.map(item => item.itemName).join(',')}</td>
                 <td>{mealPlan.price}</td>
                 <td> <input id={mealPlan._id}
                   type="radio"
