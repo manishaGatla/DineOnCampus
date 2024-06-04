@@ -1,3 +1,7 @@
+# Dine On Campus
+
+Dine On Campus application designed to minimize wait times during busy periods at the campus dining facilities. By providing an intuitive interface, the app enables users to easily explore menu options, submit orders, and tailor their meals to their dietary needs, ensuring a seamless and expedited dining experience.
+
 # Getting Started with Create React App
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
